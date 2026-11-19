@@ -15,6 +15,8 @@ DEST = pathlib.Path("/output/entry.png")
 def ship() -> None:
     DEST.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(SOURCE, DEST)
+    if DEST.stat().st_size != SOURCE.stat().st_size:
+        raise SystemExit("entry.png copy is incomplete")
 
 
 if __name__ == "__main__":
