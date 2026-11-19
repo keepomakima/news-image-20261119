@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""news-image-20261119 entrypoint: copy the finished front page to output.
+"""news-image-20261119 entrypoint v2: copy the finished front page to output.
 
-The front page (entry.png, 1024x1024) was composed by build_frontpage.py
+The front page (entry.png, 1024x1024) was composed by build_frontpage_v2.py
 from AI-generated photo panels and PIL typesetting. This program only copies
 those exact bytes to /output/entry.png, so both runs write identical bytes.
 Standard library only, no network.
