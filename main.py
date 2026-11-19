@@ -1,27 +1,28 @@
 #!/usr/bin/env python3
-"""news-image-20261119 entrypoint v2: copy the finished front page to output.
+"""Entry point for the news-image-20261119 v2 front page.
 
-The front page (entry.png, 1024x1024) was composed by build_frontpage_v2.py
-from AI-generated photo panels and PIL typesetting. This program only copies
-those exact bytes to /output/entry.png, so both runs write identical bytes.
-Standard library only, no network.
+The page itself (entry.png, 1024 by 1024) is composed by
+build_frontpage_v2.py from generated photo panels and PIL typesetting.
+This script only places those exact bytes where the harness looks for
+them. It never touches the network, never re-encodes the image and
+never writes a timestamp, so repeated runs stay byte-identical.
 """
-import os
+
 import shutil
 import sys
-
-HERE = os.path.dirname(os.path.abspath(__file__))
-SRC = os.path.join(HERE, "entry.png")
-OUT_DIR = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
-DST = os.path.join(OUT_DIR, "entry.png")
-# The copy is byte-for-byte: no re-encoding, no metadata rewrite.
+from os import environ, makedirs
+from os.path import abspath, dirname, join
 
 
-def main() -> int:
-    os.makedirs(OUT_DIR, exist_ok=True)
-    shutil.copyfile(SRC, DST)
+def run() -> int:
+    # v2 keeps the v1 contract (copy entry.png to the harness output dir)
+    # but spells the path handling out instead of relying on module globals.
+    here = dirname(abspath(__file__))
+    target_dir = environ.get("MAKEFUN_OUTPUT_DIR", "/output")
+    makedirs(target_dir, exist_ok=True)
+    shutil.copyfile(join(here, "entry.png"), join(target_dir, "entry.png"))
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(run())
