@@ -13,6 +13,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SOURCE = os.path.join(HERE, "entry.png")
 TARGET_DIR = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
 TARGET = os.path.join(TARGET_DIR, "entry.png")
+# The copy is byte-for-byte: no re-encoding, no re-drawing, so the
+# shipped image is identical to the one verified in this repository.
 
 
 def deliver():
