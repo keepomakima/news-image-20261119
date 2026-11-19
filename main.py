@@ -1,23 +1,31 @@
 #!/usr/bin/env python3
-"""news-image-20261119 v3 entrypoint.
+"""news-image-20261119 v4 entrypoint.
 
-The front page is baked into this repository as entry.png. This program
-ships it byte-for-byte to /output/entry.png. No network, no drawing.
+The front page is baked into this repository as entry.png. Running this
+program places an exact copy at /output/entry.png. It draws nothing and
+talks to no network — it only moves bytes from here to there.
 """
-import pathlib
+import os
 import shutil
+import sys
 
-HERE = pathlib.Path(__file__).resolve().parent
-SOURCE = HERE / "entry.png"
-DEST = pathlib.Path("/output/entry.png")
+HERE = os.path.dirname(os.path.abspath(__file__))
+SOURCE = os.path.join(HERE, "entry.png")
+TARGET_DIR = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
+TARGET = os.path.join(TARGET_DIR, "entry.png")
 
 
-def ship() -> None:
-    DEST.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(SOURCE, DEST)
-    if DEST.stat().st_size != SOURCE.stat().st_size:
-        raise SystemExit("entry.png copy is incomplete")
+def deliver():
+    if not os.path.isfile(SOURCE):
+        sys.exit("entry.png is missing from the repository")
+    os.makedirs(TARGET_DIR, exist_ok=True)
+    shutil.copyfile(SOURCE, TARGET)
+    src_bytes = os.path.getsize(SOURCE)
+    dst_bytes = os.path.getsize(TARGET)
+    if src_bytes != dst_bytes:
+        sys.exit("entry.png copy is incomplete: %d != %d" % (src_bytes, dst_bytes))
+    print("delivered %s (%d bytes) -> %s" % (SOURCE, src_bytes, TARGET))
 
 
 if __name__ == "__main__":
-    ship()
+    deliver()
